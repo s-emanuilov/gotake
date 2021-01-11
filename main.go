@@ -1,6 +1,8 @@
 package main
 
 import (
+	"errors"
+	"flag"
 	"io"
 	"io/ioutil"
 	"log"
@@ -16,7 +18,26 @@ var wg sync.WaitGroup
 type source struct {
 	url         string
 	destination string
-	parallels   int8
+	connections int64
+}
+
+func getSourceData() (source, error) {
+	// Validate that we're getting the correct number of arguments
+	if len(os.Args) < 2 {
+		return source{}, errors.New("A source URL argument is required")
+	}
+
+	flag.Parse()             // This will parse all the arguments from the terminal
+	sourceUrl := flag.Arg(0) // The only argument (that is not a flag option) is the file location (CSV file)
+
+	// Defining option flags. For this, we're using the Flag package from the standard library
+	// We need to define three arguments: the flag's name, the default value, and a short description (displayed whith the option --help)
+	destination := flag.String("destination", "change.txt", "Column separator")
+	connections := flag.Int64("connections", 50, "Generate pretty JSON")
+
+	// If we get to this endpoint, our program arguments are validated
+	// We return the corresponding struct instance with all the required data
+	return source{sourceUrl, *destination, *connections}, nil
 }
 
 func main() {
