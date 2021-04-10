@@ -33,9 +33,21 @@ func getCurrentDir() string {
 }
 
 func downloadRanges(url string) {
-	if verbose {
-		fmt.Println("Starting downloading: " + url)
+	// Validate connections
+	validateConnections()
+
+	// Validate the URL
+	if validateUrl(url) == false {
+		message := fmt.Sprintf("%s seems not be a valid input", url)
+		printMessage(message, "error")
+		return
 	}
+
+	if verbose {
+		message := fmt.Sprintf("Starting downloading: %s", url)
+		printMessage(message, "info")
+	}
+
 	// Init the counter for the current time
 	start := time.Now()
 
@@ -45,7 +57,8 @@ func downloadRanges(url string) {
 	// Perform a HEAD request to fetch the headers
 	res, err := http.Head(url)
 	if err != nil {
-		fmt.Printf("Error fetching %s! Please try with a different method and not Range Requests.\n", url)
+		message := fmt.Sprintf("Error fetching %s! Please try with a different method and not Range Requests.\n", url)
+		printMessage(message, "error")
 		return
 	}
 
@@ -53,7 +66,8 @@ func downloadRanges(url string) {
 	filename := filepath.Base(url)
 
 	// Make the temp dir to hold the chunks
-	tempDir := path.Join(currentDir, filename+"_"+randStringBytes(4)+"_tmp")
+	tempFilename := fmt.Sprintf("%s_%s_tmp", filename, randStringBytes(4))
+	tempDir := path.Join(currentDir, tempFilename)
 
 	// Create the temp directory to hold intermediate data
 	err = os.Mkdir(tempDir, 0755)
@@ -64,7 +78,7 @@ func downloadRanges(url string) {
 
 	// Check if there is an error with getting name for the file
 	if len(filename) == 0 {
-		filename = "gotake-download"
+		filename = defaultFilename
 	}
 
 	// Make a maps from the header
@@ -73,20 +87,30 @@ func downloadRanges(url string) {
 	acceptRanges := maps["Accept-Ranges"][0]
 
 	if strings.Contains(acceptRanges, "bytes") == false {
-		log.Fatalf("%s doesn't support Range headers. Please try another method.", url)
+		// Remove the TEMP dir
+		defer os.Remove(tempDir)
+
+		// Return an error mesage
+		message := fmt.Sprintf("%s doesn't support Range Headers. Please try another method.", url)
+		printMessage(message, "error")
+		return
 	}
 
 	// Get the content length from the header request
 	contentLength, _ := strconv.Atoi(maps["Content-Length"][0])
 
-	// Get the Content-Type of the resource
-	contentType := maps["Content-Type"][0]
-
-	// Check if the Content-Length is 0, so most likely we have a problem
 	if contentLength == 0 {
-		fmt.Printf("Error fetching %s! Content-Length is 0. Please try with a different method and not Range Requests.\n", url)
+		// Remove the TEMP dir
+		defer os.Remove(tempDir)
+
+		// Return an error mesage
+		message := fmt.Sprintf("%s Content-Length headers is 0. Most likely origin server doesn't support Range requests.", url)
+		printMessage(message, "error")
 		return
 	}
+
+	// Get the Content-Type of the resource
+	contentType := maps["Content-Type"][0]
 
 	// Number of  Go-routines for the process so each downloads
 	// Bytes for each Go-routine
@@ -135,7 +159,8 @@ func downloadRanges(url string) {
 			ioutil.WriteFile(path, []byte(string(body[i])), 0x777)
 			wg.Done()
 			if verbose {
-				printMessage("chunk of "+filename+" with range "+rangeHeader, "download")
+				message := fmt.Sprintf("chunk of %s with range %s", filename, rangeHeader)
+				printMessage(message, "download")
 			}
 		}(min, max, i)
 	}
@@ -207,7 +232,9 @@ func printMessage(message string, kind string) {
 	case "success":
 		_, _ = color.New(color.FgGreen, color.Bold).Print("SUCCESS: ")
 	case "download":
-		_, _ = color.New(color.FgGreen, color.Bold).Print("DOWNLOADED: ")
+		_, _ = color.New(color.FgGreen).Print("DOWNLOADED: ")
+	case "info":
+		_, _ = color.New(color.FgCyan, color.Bold).Print("INFO: ")
 	default:
 	}
 	fmt.Println(message)

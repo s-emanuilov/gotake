@@ -27,9 +27,8 @@ func init() {
 var rootCmd = &cobra.Command{
 	Use:   "gotake",
 	Short: "Fast HTTP file downloads",
-	Long: `GoTake provide fast, easy and reliable fast downloads.
-Why? Use effective system resource to download in a breach`,
-	Args: cobra.MaximumNArgs(1),
+	Long:  longDescription,
+	Args:  cobra.MaximumNArgs(1),
 	Run: func(cmd *cobra.Command, args []string) {
 		if len(args) < 1 {
 			printMessage("Please provide a valid URL. Use GoTake like: gotake http://demo.com/test.png OR gotake -h", "warning")
