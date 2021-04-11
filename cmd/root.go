@@ -13,15 +13,18 @@ var (
 	connections int
 	verbose     bool
 	summary     bool
+	standard    bool
 )
 
 func init() {
 	// Random seed, we are using for generating random temp directories
 	rand.Seed(time.Now().UnixNano())
 
-	rootCmd.PersistentFlags().BoolVarP(&verbose, "verbose", "v", false, "Verbose output during the download")
-	rootCmd.PersistentFlags().BoolVarP(&summary, "summary", "s", false, "Summary after the download")
-	rootCmd.PersistentFlags().IntVarP(&connections, "connections", "c", 50, "How many connections to fire to a single file?")
+	rootCmd.PersistentFlags().BoolVarP(&verbose, "verbose", "v", false, "Verbose output during the download.")
+	rootCmd.PersistentFlags().BoolVarP(&summary, "info", "i", false, "Info (summary) in the process of download.")
+	rootCmd.PersistentFlags().BoolVarP(&standard, "standard", "s", false, "Should we use the standard download (much slower)?")
+	rootCmd.PersistentFlags().IntVarP(&connections, "connections", "c", 50, "How many connections to fire to a single URL?")
+	rootCmd.PersistentFlags().StringVarP(&filename, "filename", "f", "", "Different name to the target file?")
 }
 
 var rootCmd = &cobra.Command{
@@ -35,9 +38,23 @@ var rootCmd = &cobra.Command{
 			return
 		}
 
+		// Catch the URL from arguments
 		url = args[0]
 
-		downloadRanges(url)
+		// Validate the URL
+		if validateUrl(url) == false {
+			message := fmt.Sprintf("%s seems not be a valid input", url)
+			printMessage(message, "error")
+			return
+		}
+
+		// Chose which method to use for the downloading
+		if standard {
+			downloadStandard(url)
+		} else {
+			downloadRanges(url)
+		}
+
 	},
 }
 
