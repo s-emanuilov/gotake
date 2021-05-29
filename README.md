@@ -29,6 +29,12 @@ gotake http://sample.li/tesla.jpg -c=10 -a=False
 ```
 
 ## Benchmarks
+![Quick Benchmark](/docs/images/quick-benchmark.png)
+
+## ⚒ Compile from source
+The other way to install **gotake** is to clone its GitHub repository and build it from source. 
+That is the common way if you want to make changes to the code base.
 
 ## License
+gotake is an Open-Source Project, and you can contribute to it in many ways. 
 

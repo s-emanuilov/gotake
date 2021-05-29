@@ -289,6 +289,11 @@ func downloadRanges(url string) {
 	if size != int64(contentLength) {
 		message := fmt.Sprintf("Missmatch in Content-Length and downloaded file size.")
 		printMessage(message, "error")
+
+		// Start the process with a normal download if the downloaded file is not good
+		infoMessage := fmt.Sprintf("Triggering standart download now ...")
+		printMessage(infoMessage, "info")
+		downloadStandard(url)
 		return
 	}
 
