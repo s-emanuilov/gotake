@@ -138,6 +138,21 @@ func downloadRanges(url string) {
 		contentType = maps["Content-Type"][0]
 	}
 
+	// Calculate optimal connections number
+	if auto {
+		autoConnections := contentLength / chunkSize
+		// Make sure we will add good amount of connections in small files
+		if autoConnections < 1 {
+			autoConnections = 1
+		}
+		connections = autoConnections
+
+		if verbose {
+			message := fmt.Sprintf("Auto connections set to: %d", connections)
+			printMessage(message, "info")
+		}
+	}
+
 	// Number of  Go-routines for the process so each downloads
 	// Bytes for each Go-routine
 	lenSub := contentLength / connections
@@ -175,14 +190,22 @@ func downloadRanges(url string) {
 
 			// Get the body response
 			resp, _ := client.Do(req)
-			defer resp.Body.Close()
+			defer func(Body io.ReadCloser) {
+				err := Body.Close()
+				if err != nil {
+
+				}
+			}(resp.Body)
 			reader, _ := ioutil.ReadAll(resp.Body)
 			body[i] = string(reader)
 
 			// Make the chunks as small files in a temp dir
-			path := path.Join(tempDir, strconv.Itoa(i)+".temp")
+			tempPath := path.Join(tempDir, strconv.Itoa(i)+".temp")
 			// Write to the file i as a byte array
-			ioutil.WriteFile(path, []byte(string(body[i])), 0x777)
+			err := ioutil.WriteFile(tempPath, []byte(string(body[i])), 0x777)
+			if err != nil {
+				return
+			}
 			wg.Done()
 			if verbose {
 				message := fmt.Sprintf("chunk of %s with range %s", filename, rangeHeader)
@@ -201,7 +224,12 @@ func downloadRanges(url string) {
 	}
 
 	// Close the file
-	defer out.Close()
+	defer func(out *os.File) {
+		err := out.Close()
+		if err != nil {
+
+		}
+	}(out)
 
 	if verbose {
 		printMessage("Started to combine chunks into the result file", "info")
@@ -248,6 +276,22 @@ func downloadRanges(url string) {
 	// Measure the time elapsed
 	elapsed := time.Since(start)
 
+	// Check if the Content-Length from header matches the result file
+	fi, err := os.Stat(targetFile)
+	if err != nil || fi == nil {
+		message := fmt.Sprintf("Cannot check the size of downloaded file")
+		printMessage(message, "error")
+	}
+
+	// get the size
+	size := fi.Size()
+
+	if size != int64(contentLength) {
+		message := fmt.Sprintf("Missmatch in Content-Length and downloaded file size.")
+		printMessage(message, "error")
+		return
+	}
+
 	if summary {
 		t := table.NewWriter()
 		t.SetOutputMirror(os.Stdout)
@@ -289,7 +333,12 @@ func downloadStandard(url string) {
 		return
 	}
 
-	defer out.Close()
+	defer func(out *os.File) {
+		err := out.Close()
+		if err != nil {
+
+		}
+	}(out)
 
 	res, err := http.Get(url)
 	if err != nil {
@@ -324,7 +373,12 @@ func downloadStandard(url string) {
 		contentType = maps["Content-Type"][0]
 	}
 
-	defer res.Body.Close()
+	defer func(Body io.ReadCloser) {
+		err := Body.Close()
+		if err != nil {
+
+		}
+	}(res.Body)
 
 	if _, err := io.Copy(out, res.Body); err != nil {
 		message := fmt.Sprintf("Error downloading body in file %s", targetFile)

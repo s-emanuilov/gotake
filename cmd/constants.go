@@ -2,8 +2,8 @@ package cmd
 
 import "fmt"
 
-// Constants and variables related to main funtions
-const version = 0.3
+// Constants and variables related to main functions
+const version = 0.5
 
 var longDescription = fmt.Sprintf(`GoTake provide fast, easy and reliable fast downloads.
 
@@ -24,3 +24,6 @@ const defaultFilename = "gotake-file"
 
 // Default Content Type of the file
 const defaultContentType = "text/plain"
+
+// The amount in megabytes for each connections in auto mode
+const chunkSize = 1 * 1024 * 1024

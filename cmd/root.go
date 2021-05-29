@@ -11,6 +11,7 @@ import (
 var (
 	url         string
 	connections int
+	auto        bool
 	verbose     bool
 	summary     bool
 	standard    bool
@@ -24,12 +25,13 @@ func init() {
 	rootCmd.PersistentFlags().BoolVarP(&summary, "info", "i", false, "Info (summary) in the process of download.")
 	rootCmd.PersistentFlags().BoolVarP(&standard, "standard", "s", false, "Should we use the standard download (much slower)?")
 	rootCmd.PersistentFlags().IntVarP(&connections, "connections", "c", 50, "How many connections to fire to a single URL?")
+	rootCmd.PersistentFlags().BoolVarP(&auto, "auto", "a", true, "Do you want to calculate automatically the number connections?")
 	rootCmd.PersistentFlags().StringVarP(&filename, "filename", "f", "", "Different name to the target file?")
 }
 
 var rootCmd = &cobra.Command{
 	Use:   "gotake",
-	Short: "Fast HTTP file downloads",
+	Short: "Fast and reliable file downloads",
 	Long:  longDescription,
 	Args:  cobra.MaximumNArgs(1),
 	Run: func(cmd *cobra.Command, args []string) {
@@ -43,9 +45,11 @@ var rootCmd = &cobra.Command{
 
 		// Validate the URL
 		if validateUrl(url) == false {
-			message := fmt.Sprintf("%s seems not be a valid input", url)
-			printMessage(message, "error")
-			return
+			message := fmt.Sprintf("%s doesn't have protocol, trying with http:// prefix", url)
+			printMessage(message, "info")
+
+			// Append the default protocol on the address
+			url = fmt.Sprintf("%s%s", "http://", url)
 		}
 
 		// Chose which method to use for the downloading
@@ -60,7 +64,7 @@ var rootCmd = &cobra.Command{
 
 func Execute() {
 	if err := rootCmd.Execute(); err != nil {
-		fmt.Fprintln(os.Stderr, err)
+		_, _ = fmt.Fprintln(os.Stderr, err)
 		os.Exit(1)
 	}
 }
