@@ -1,6 +1,6 @@
 # gotake
+## Fast, reliable and easy file downloads
 
-Fast, reliable and easy file downloads.   
 
 CLI for blazing fast downloads, available for Mac, Linux and Windows.
 
