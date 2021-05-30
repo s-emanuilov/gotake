@@ -47,13 +47,13 @@ gotake http://sample.li/tesla.jpg -c=10 -a=False
 ## How it works
 
 <p align="center">
-<img src="/docs/images/schema.png" alt="Schema for file downloads with gotake">
+    <img src="/docs/images/schema.png" alt="Schema for file downloads with gotake">
 </p>
 
 ## Benchmarks
 
 <p align="center">
-<img src="/docs/images/quick-benchmark.png" alt="Quick Benchmark">
+    <img src="/docs/images/quick-benchmark.png" alt="Quick Benchmark">
 </p>
 
 ## Documentation
@@ -65,7 +65,7 @@ gotake -h
 ```
 
 <p align="center">
-<img src="/docs/images/documentation.png" alt="gotake Documentation" style="max-width: 60%">
+    <img src="/docs/images/documentation.png" alt="gotake Documentation" style="width: 60%">
 </p>
 
 ## ⚒ Compile from source
