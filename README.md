@@ -65,8 +65,36 @@ gotake -h
 ```
 
 <p align="center">
-    <img src="/docs/images/documentation.png" alt="gotake Documentation" style="width: 60%">
+    <img src="/docs/images/docs.png" alt="gotake Documentation" style="width: 60%">
 </p>
+
+## Flags
+### -a, --auto (bool) 
+default: **True**  
+Choose the number of connections automatically, depending on the file size.
+
+### -c, --connections (int)
+default: **50**  
+Number of connections. You need to disable **auto** mode for using a specific number.
+
+### -f, --filename (string)
+default: **extracted from URL**  
+Define different name to the target file if you prefer.
+
+### -i, --info (bool)
+default: **False**  
+Print a summary for the download after finish.
+
+### -s, --standard (bool)
+default: **False**  
+Force the standard method of download (not using Range-Request).
+
+### -v, --verbose (bool)
+default: **False**
+Show information about the current state of download process. Useful for debug.
+
+### -h, --help
+Print a documentation with all available flags.
 
 ## ⚒ Compile from source
 
