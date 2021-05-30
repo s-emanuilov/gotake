@@ -36,6 +36,9 @@ gotake http://sample.li/tesla.jpg -v
 gotake http://sample.li/tesla.jpg -c=10 -a=False
 ```
 
+## How it works
+![Schema for file downloads with gotake](/docs/images/schema.png)
+
 ## Benchmarks
 ![Quick Benchmark](/docs/images/quick-benchmark.png)
 
