@@ -65,7 +65,7 @@ gotake -h
 ```
 
 <p align="center">
-<img src="/docs/images/help.png" alt="gotake Documentation">
+<img src="/docs/images/documentation.png" alt="gotake Documentation">
 </p>
 
 ## ⚒ Compile from source
