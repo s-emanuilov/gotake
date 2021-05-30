@@ -53,7 +53,7 @@ gotake http://sample.li/tesla.jpg -c=10 -a=False
 ## Benchmarks
 
 <p align="center">
-![Quick Benchmark](/docs/images/quick-benchmark.png)
+<img src="/docs/images/quick-benchmark.png" alt="Quick Benchmark">
 </p>
 
 ## Documentation
@@ -64,12 +64,15 @@ Check the documentation and available flags
 gotake -h
 ```
 
-![gotake Documentation](/docs/images/help.png)
+<p align="center">
+<img src="/docs/images/help.png" alt="gotake Documentation">
+</p>
 
 ## ⚒ Compile from source
 
 The other way to install **gotake** is to clone its GitHub repository and build it from source. That is the common way
-if you want to make changes to the code base.
+if you want to make changes to the code base. The tool is made with [Golang](http://golang.bg/).
+
 
 ```bash
 git clone https://github.com/simeonemanuilov/gotake
