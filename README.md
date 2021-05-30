@@ -90,7 +90,7 @@ default: **False**
 Force the standard method of download (not using Range-Request).
 
 ### -v, --verbose (bool)
-default: **False**
+default: **False**  
 Show information about the current state of download process. Useful for debug.
 
 ### -h, --help
