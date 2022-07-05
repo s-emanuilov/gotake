@@ -20,7 +20,7 @@ sudo curl -L "https://github.com/simeonemanuilov/gotake/releases/download/0.5/go
 
 ## Examples
 
-### Quick download (auto find optimal connection number)
+### Quick download (auto find optimal connections amount)
 
 ```bash
 gotake http://sample.li/face.png
