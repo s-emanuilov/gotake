@@ -3,7 +3,7 @@ package cmd
 import "fmt"
 
 // Constants and variables related to main functions
-const version = 0.5
+const version = 0.6
 
 var longDescription = fmt.Sprintf(`GoTake provide fast, easy and reliable fast downloads.
 

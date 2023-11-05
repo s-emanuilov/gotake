@@ -1,10 +1,10 @@
-# gotake
+# gotake: High-Speed File Downloader
 
-## Fast, reliable and easy file downloads
-
-CLI for blazing fast downloads, available for Mac, Linux and Windows.
+`gotake` is a CLI tool designed to expedite file downloading processes. Engineered for reliability and ease of use, it's compatible across Mac, Linux, and Windows platforms.  
+Under the hood, `gotake` employs either standard HTTP requests or range requests to fetch files, the latter enabling concurrent downloads of file chunks which are subsequently assembled to form the complete file.
 
 ## Install
+Install `gotake` with a simple one-liner. Below are the instructions for macOS and Linux:
 
 ### macOS
 
@@ -19,6 +19,7 @@ sudo curl -L "https://github.com/simeonemanuilov/gotake/releases/download/0.5/go
 ```
 
 ## Examples
+Launching a download is straightforward with gotake. Here are some examples to get you started:
 
 ### Quick download (auto find optimal connections amount)
 
